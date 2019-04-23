@@ -1,0 +1,978 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.retech.tpcms.mapper.ResourceMapper" >
+  <resultMap id="BaseResultMap" type="com.retech.tpcms.entity.Resource" >
+    
+    <!-- 资源编号 -->
+    <id column="code" property="code" jdbcType="INTEGER" />
+    
+    <!-- 来源机构id -->
+    <result column="org_id" property="orgId" jdbcType="INTEGER" />
+    
+    <!-- 文件大小 -->
+    <result column="resource_size" property="resourceSize" jdbcType="BIGINT" />
+    
+    <!-- 教材格式 -->
+    <result column="format" property="format" jdbcType="VARCHAR" />
+    
+    <!-- 资源路径 -->
+    <result column="preview_url" property="previewUrl" jdbcType="VARCHAR" />
+    
+    <!-- 上传状态:0上传失败，1上传成功 -->
+    <result column="upload_status" property="uploadStatus" jdbcType="INTEGER" />
+    
+    <!-- 资源名称 -->
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    
+    <!-- 入库人 -->
+    <result column="in_by" property="inBy" jdbcType="INTEGER" />
+    
+    <!-- 入库时间 -->
+    <result column="in_date" property="inDate" jdbcType="TIMESTAMP" />
+    
+    <!-- 资源大类 -->
+    <result column="res_type" property="resType" jdbcType="INTEGER" />
+    
+    <!-- 分类id -->
+    <result column="kind" property="kind" jdbcType="INTEGER" />
+    
+    <!-- 学科 -->
+    <result column="sub_code" property="subCode" jdbcType="INTEGER" />
+    
+    <!-- 学段 -->
+    <result column="stage_code" property="stageCode" jdbcType="INTEGER" />
+    
+    <!-- 年级 -->
+    <result column="class_code" property="classCode" jdbcType="INTEGER" />
+    
+    <!-- 册别 -->
+    <result column="book_code" property="bookCode" jdbcType="INTEGER" />
+    
+    <!-- 出版社 -->
+    <result column="publishing" property="publishing" jdbcType="INTEGER" />
+    
+    <!-- CP价格 -->
+    <result column="cp_price" property="cpPrice" jdbcType="REAL" />
+    
+    <!-- B2B价格 -->
+    <result column="b2b_price" property="b2bPrice" jdbcType="REAL" />
+    
+    <!-- B2C价格 -->
+    <result column="b2c_price" property="b2cPrice" jdbcType="REAL" />
+    
+    <!-- 封面 -->
+    <result column="cover" property="cover" jdbcType="VARCHAR" />
+    
+    <!-- 提交状态：0未提交，1已提交 -->
+    <result column="submit_status" property="submitStatus" jdbcType="INTEGER" />
+    
+    <!-- 审核状态:1初审过，-1初审未过，2复审过，-2复审未过，3终审过，-3终审未过 -->
+    <result column="approval_status" property="approvalStatus" jdbcType="VARCHAR" />
+    
+    <!-- 资源状态：0初始化，1审核中，2审核通过，3审核未通过 -->
+    <result column="status" property="status" jdbcType="INTEGER" />
+    
+    <!-- 标引人 -->
+    <result column="indexer_id" property="indexerId" jdbcType="INTEGER" />
+    
+    <!-- 标引时间 -->
+    <result column="index_time" property="indexTime" jdbcType="TIMESTAMP" />
+    
+    <!-- 初审人 -->
+    <result column="first_user_id" property="firstUserId" jdbcType="INTEGER" />
+    
+    <!-- 是否已经分配复审：1是，0否 -->
+    <result column="second_distribute_true" property="secondDistributeTrue" jdbcType="INTEGER" />
+    
+    <!-- 复审人 -->
+    <result column="second_user_id" property="secondUserId" jdbcType="INTEGER" />
+    
+    <!-- 复审截止日期 -->
+    <result column="second_deadline" property="secondDeadline" jdbcType="TIMESTAMP" />
+    
+    <!-- 复审分配时间 -->
+    <result column="second_distribute_time" property="secondDistributeTime" jdbcType="TIMESTAMP" />
+    
+    <!-- 复审分配人 -->
+    <result column="second_distributor" property="secondDistributor" jdbcType="INTEGER" />
+    
+    <!-- 是否已经分配终审：1是，0否 -->
+    <result column="final_distribute_true" property="finalDistributeTrue" jdbcType="INTEGER" />
+    
+    <!-- 终审人 -->
+    <result column="final_user_id" property="finalUserId" jdbcType="INTEGER" />
+    
+    <!-- 终止截止日期 -->
+    <result column="final_deadline" property="finalDeadline" jdbcType="TIMESTAMP" />
+    
+    <!-- 终审分配时间 -->
+    <result column="final_distribute_time" property="finalDistributeTime" jdbcType="TIMESTAMP" />
+    
+    <!-- 终审分配人 -->
+    <result column="final_distributor" property="finalDistributor" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.retech.tpcms.entity.ResourceWithBLOBs" extends="BaseResultMap" >
+    
+    <!-- 简介 -->
+    <result column="des" property="des" jdbcType="LONGVARCHAR" />
+    
+    <!-- 目录 -->
+    <result column="catalog" property="catalog" jdbcType="LONGVARCHAR" />
+    
+    <!-- 复审任务描述 -->
+    <result column="second_task_description" property="secondTaskDescription" jdbcType="LONGVARCHAR" />
+    
+    <!-- 终审任务描述 -->
+    <result column="final_task_description" property="finalTaskDescription" jdbcType="LONGVARCHAR" />
+    
+    <!-- 元数据信息 -->
+    <result column="metadateInfo" property="metadateinfo" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    code, org_id, resource_size, format, preview_url, upload_status, name, in_by, in_date, 
+    res_type, kind, sub_code, stage_code, class_code, book_code, publishing, cp_price, 
+    b2b_price, b2c_price, cover, submit_status, approval_status, status, indexer_id, 
+    index_time, first_user_id, second_distribute_true, second_user_id, second_deadline, 
+    second_distribute_time, second_distributor, final_distribute_true, final_user_id, 
+    final_deadline, final_distribute_time, final_distributor
+  </sql>
+  <sql id="Blob_Column_List" >
+    des, catalog, second_task_description, final_task_description, metadateInfo
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.retech.tpcms.entity.ResourceExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_resource
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.retech.tpcms.entity.ResourceExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_resource
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="offset != null and offset >= 0 and limit != null and limit>=0" >
+      limit ${offset} , ${limit}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_resource
+    where code = #{code,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_resource
+    where code = #{code,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.retech.tpcms.entity.ResourceExample" >
+    delete from t_resource
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" >
+    insert into t_resource (code, org_id, resource_size, 
+      format, preview_url, upload_status, 
+      name, in_by, in_date, 
+      res_type, kind, sub_code, 
+      stage_code, class_code, book_code, 
+      publishing, cp_price, b2b_price, 
+      b2c_price, cover, submit_status, 
+      approval_status, status, indexer_id, 
+      index_time, first_user_id, second_distribute_true, 
+      second_user_id, second_deadline, second_distribute_time, 
+      second_distributor, final_distribute_true, 
+      final_user_id, final_deadline, final_distribute_time, 
+      final_distributor, des, catalog, 
+      second_task_description, final_task_description, 
+      metadateInfo)
+    values (#{code,jdbcType=INTEGER}, #{orgId,jdbcType=INTEGER}, #{resourceSize,jdbcType=BIGINT}, 
+      #{format,jdbcType=VARCHAR}, #{previewUrl,jdbcType=VARCHAR}, #{uploadStatus,jdbcType=INTEGER}, 
+      #{name,jdbcType=VARCHAR}, #{inBy,jdbcType=INTEGER}, #{inDate,jdbcType=TIMESTAMP}, 
+      #{resType,jdbcType=INTEGER}, #{kind,jdbcType=INTEGER}, #{subCode,jdbcType=INTEGER}, 
+      #{stageCode,jdbcType=INTEGER}, #{classCode,jdbcType=INTEGER}, #{bookCode,jdbcType=INTEGER}, 
+      #{publishing,jdbcType=INTEGER}, #{cpPrice,jdbcType=REAL}, #{b2bPrice,jdbcType=REAL}, 
+      #{b2cPrice,jdbcType=REAL}, #{cover,jdbcType=VARCHAR}, #{submitStatus,jdbcType=INTEGER}, 
+      #{approvalStatus,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{indexerId,jdbcType=INTEGER}, 
+      #{indexTime,jdbcType=TIMESTAMP}, #{firstUserId,jdbcType=INTEGER}, #{secondDistributeTrue,jdbcType=INTEGER}, 
+      #{secondUserId,jdbcType=INTEGER}, #{secondDeadline,jdbcType=TIMESTAMP}, #{secondDistributeTime,jdbcType=TIMESTAMP}, 
+      #{secondDistributor,jdbcType=INTEGER}, #{finalDistributeTrue,jdbcType=INTEGER}, 
+      #{finalUserId,jdbcType=INTEGER}, #{finalDeadline,jdbcType=TIMESTAMP}, #{finalDistributeTime,jdbcType=TIMESTAMP}, 
+      #{finalDistributor,jdbcType=INTEGER}, #{des,jdbcType=LONGVARCHAR}, #{catalog,jdbcType=LONGVARCHAR}, 
+      #{secondTaskDescription,jdbcType=LONGVARCHAR}, #{finalTaskDescription,jdbcType=LONGVARCHAR}, 
+      #{metadateinfo,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" >
+    insert into t_resource
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="orgId != null" >
+        org_id,
+      </if>
+      <if test="resourceSize != null" >
+        resource_size,
+      </if>
+      <if test="format != null" >
+        format,
+      </if>
+      <if test="previewUrl != null" >
+        preview_url,
+      </if>
+      <if test="uploadStatus != null" >
+        upload_status,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="inBy != null" >
+        in_by,
+      </if>
+      <if test="inDate != null" >
+        in_date,
+      </if>
+      <if test="resType != null" >
+        res_type,
+      </if>
+      <if test="kind != null" >
+        kind,
+      </if>
+      <if test="subCode != null" >
+        sub_code,
+      </if>
+      <if test="stageCode != null" >
+        stage_code,
+      </if>
+      <if test="classCode != null" >
+        class_code,
+      </if>
+      <if test="bookCode != null" >
+        book_code,
+      </if>
+      <if test="publishing != null" >
+        publishing,
+      </if>
+      <if test="cpPrice != null" >
+        cp_price,
+      </if>
+      <if test="b2bPrice != null" >
+        b2b_price,
+      </if>
+      <if test="b2cPrice != null" >
+        b2c_price,
+      </if>
+      <if test="cover != null" >
+        cover,
+      </if>
+      <if test="submitStatus != null" >
+        submit_status,
+      </if>
+      <if test="approvalStatus != null" >
+        approval_status,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="indexerId != null" >
+        indexer_id,
+      </if>
+      <if test="indexTime != null" >
+        index_time,
+      </if>
+      <if test="firstUserId != null" >
+        first_user_id,
+      </if>
+      <if test="secondDistributeTrue != null" >
+        second_distribute_true,
+      </if>
+      <if test="secondUserId != null" >
+        second_user_id,
+      </if>
+      <if test="secondDeadline != null" >
+        second_deadline,
+      </if>
+      <if test="secondDistributeTime != null" >
+        second_distribute_time,
+      </if>
+      <if test="secondDistributor != null" >
+        second_distributor,
+      </if>
+      <if test="finalDistributeTrue != null" >
+        final_distribute_true,
+      </if>
+      <if test="finalUserId != null" >
+        final_user_id,
+      </if>
+      <if test="finalDeadline != null" >
+        final_deadline,
+      </if>
+      <if test="finalDistributeTime != null" >
+        final_distribute_time,
+      </if>
+      <if test="finalDistributor != null" >
+        final_distributor,
+      </if>
+      <if test="des != null" >
+        des,
+      </if>
+      <if test="catalog != null" >
+        catalog,
+      </if>
+      <if test="secondTaskDescription != null" >
+        second_task_description,
+      </if>
+      <if test="finalTaskDescription != null" >
+        final_task_description,
+      </if>
+      <if test="metadateinfo != null" >
+        metadateInfo,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="code != null" >
+        #{code,jdbcType=INTEGER},
+      </if>
+      <if test="orgId != null" >
+        #{orgId,jdbcType=INTEGER},
+      </if>
+      <if test="resourceSize != null" >
+        #{resourceSize,jdbcType=BIGINT},
+      </if>
+      <if test="format != null" >
+        #{format,jdbcType=VARCHAR},
+      </if>
+      <if test="previewUrl != null" >
+        #{previewUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadStatus != null" >
+        #{uploadStatus,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="inBy != null" >
+        #{inBy,jdbcType=INTEGER},
+      </if>
+      <if test="inDate != null" >
+        #{inDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resType != null" >
+        #{resType,jdbcType=INTEGER},
+      </if>
+      <if test="kind != null" >
+        #{kind,jdbcType=INTEGER},
+      </if>
+      <if test="subCode != null" >
+        #{subCode,jdbcType=INTEGER},
+      </if>
+      <if test="stageCode != null" >
+        #{stageCode,jdbcType=INTEGER},
+      </if>
+      <if test="classCode != null" >
+        #{classCode,jdbcType=INTEGER},
+      </if>
+      <if test="bookCode != null" >
+        #{bookCode,jdbcType=INTEGER},
+      </if>
+      <if test="publishing != null" >
+        #{publishing,jdbcType=INTEGER},
+      </if>
+      <if test="cpPrice != null" >
+        #{cpPrice,jdbcType=REAL},
+      </if>
+      <if test="b2bPrice != null" >
+        #{b2bPrice,jdbcType=REAL},
+      </if>
+      <if test="b2cPrice != null" >
+        #{b2cPrice,jdbcType=REAL},
+      </if>
+      <if test="cover != null" >
+        #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="submitStatus != null" >
+        #{submitStatus,jdbcType=INTEGER},
+      </if>
+      <if test="approvalStatus != null" >
+        #{approvalStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="indexerId != null" >
+        #{indexerId,jdbcType=INTEGER},
+      </if>
+      <if test="indexTime != null" >
+        #{indexTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="firstUserId != null" >
+        #{firstUserId,jdbcType=INTEGER},
+      </if>
+      <if test="secondDistributeTrue != null" >
+        #{secondDistributeTrue,jdbcType=INTEGER},
+      </if>
+      <if test="secondUserId != null" >
+        #{secondUserId,jdbcType=INTEGER},
+      </if>
+      <if test="secondDeadline != null" >
+        #{secondDeadline,jdbcType=TIMESTAMP},
+      </if>
+      <if test="secondDistributeTime != null" >
+        #{secondDistributeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="secondDistributor != null" >
+        #{secondDistributor,jdbcType=INTEGER},
+      </if>
+      <if test="finalDistributeTrue != null" >
+        #{finalDistributeTrue,jdbcType=INTEGER},
+      </if>
+      <if test="finalUserId != null" >
+        #{finalUserId,jdbcType=INTEGER},
+      </if>
+      <if test="finalDeadline != null" >
+        #{finalDeadline,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finalDistributeTime != null" >
+        #{finalDistributeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finalDistributor != null" >
+        #{finalDistributor,jdbcType=INTEGER},
+      </if>
+      <if test="des != null" >
+        #{des,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="catalog != null" >
+        #{catalog,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="secondTaskDescription != null" >
+        #{secondTaskDescription,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="finalTaskDescription != null" >
+        #{finalTaskDescription,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="metadateinfo != null" >
+        #{metadateinfo,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.retech.tpcms.entity.ResourceExample" resultType="java.lang.Integer" >
+    select count(*) from t_resource
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_resource
+    <set >
+      <if test="record.code != null" >
+        code = #{record.code,jdbcType=INTEGER},
+      </if>
+      <if test="record.orgId != null" >
+        org_id = #{record.orgId,jdbcType=INTEGER},
+      </if>
+      <if test="record.resourceSize != null" >
+        resource_size = #{record.resourceSize,jdbcType=BIGINT},
+      </if>
+      <if test="record.format != null" >
+        format = #{record.format,jdbcType=VARCHAR},
+      </if>
+      <if test="record.previewUrl != null" >
+        preview_url = #{record.previewUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.uploadStatus != null" >
+        upload_status = #{record.uploadStatus,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.inBy != null" >
+        in_by = #{record.inBy,jdbcType=INTEGER},
+      </if>
+      <if test="record.inDate != null" >
+        in_date = #{record.inDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.resType != null" >
+        res_type = #{record.resType,jdbcType=INTEGER},
+      </if>
+      <if test="record.kind != null" >
+        kind = #{record.kind,jdbcType=INTEGER},
+      </if>
+      <if test="record.subCode != null" >
+        sub_code = #{record.subCode,jdbcType=INTEGER},
+      </if>
+      <if test="record.stageCode != null" >
+        stage_code = #{record.stageCode,jdbcType=INTEGER},
+      </if>
+      <if test="record.classCode != null" >
+        class_code = #{record.classCode,jdbcType=INTEGER},
+      </if>
+      <if test="record.bookCode != null" >
+        book_code = #{record.bookCode,jdbcType=INTEGER},
+      </if>
+      <if test="record.publishing != null" >
+        publishing = #{record.publishing,jdbcType=INTEGER},
+      </if>
+      <if test="record.cpPrice != null" >
+        cp_price = #{record.cpPrice,jdbcType=REAL},
+      </if>
+      <if test="record.b2bPrice != null" >
+        b2b_price = #{record.b2bPrice,jdbcType=REAL},
+      </if>
+      <if test="record.b2cPrice != null" >
+        b2c_price = #{record.b2cPrice,jdbcType=REAL},
+      </if>
+      <if test="record.cover != null" >
+        cover = #{record.cover,jdbcType=VARCHAR},
+      </if>
+      <if test="record.submitStatus != null" >
+        submit_status = #{record.submitStatus,jdbcType=INTEGER},
+      </if>
+      <if test="record.approvalStatus != null" >
+        approval_status = #{record.approvalStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=INTEGER},
+      </if>
+      <if test="record.indexerId != null" >
+        indexer_id = #{record.indexerId,jdbcType=INTEGER},
+      </if>
+      <if test="record.indexTime != null" >
+        index_time = #{record.indexTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.firstUserId != null" >
+        first_user_id = #{record.firstUserId,jdbcType=INTEGER},
+      </if>
+      <if test="record.secondDistributeTrue != null" >
+        second_distribute_true = #{record.secondDistributeTrue,jdbcType=INTEGER},
+      </if>
+      <if test="record.secondUserId != null" >
+        second_user_id = #{record.secondUserId,jdbcType=INTEGER},
+      </if>
+      <if test="record.secondDeadline != null" >
+        second_deadline = #{record.secondDeadline,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.secondDistributeTime != null" >
+        second_distribute_time = #{record.secondDistributeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.secondDistributor != null" >
+        second_distributor = #{record.secondDistributor,jdbcType=INTEGER},
+      </if>
+      <if test="record.finalDistributeTrue != null" >
+        final_distribute_true = #{record.finalDistributeTrue,jdbcType=INTEGER},
+      </if>
+      <if test="record.finalUserId != null" >
+        final_user_id = #{record.finalUserId,jdbcType=INTEGER},
+      </if>
+      <if test="record.finalDeadline != null" >
+        final_deadline = #{record.finalDeadline,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.finalDistributeTime != null" >
+        final_distribute_time = #{record.finalDistributeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.finalDistributor != null" >
+        final_distributor = #{record.finalDistributor,jdbcType=INTEGER},
+      </if>
+      <if test="record.des != null" >
+        des = #{record.des,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.catalog != null" >
+        catalog = #{record.catalog,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.secondTaskDescription != null" >
+        second_task_description = #{record.secondTaskDescription,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.finalTaskDescription != null" >
+        final_task_description = #{record.finalTaskDescription,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.metadateinfo != null" >
+        metadateInfo = #{record.metadateinfo,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update t_resource
+    set code = #{record.code,jdbcType=INTEGER},
+      org_id = #{record.orgId,jdbcType=INTEGER},
+      resource_size = #{record.resourceSize,jdbcType=BIGINT},
+      format = #{record.format,jdbcType=VARCHAR},
+      preview_url = #{record.previewUrl,jdbcType=VARCHAR},
+      upload_status = #{record.uploadStatus,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      in_by = #{record.inBy,jdbcType=INTEGER},
+      in_date = #{record.inDate,jdbcType=TIMESTAMP},
+      res_type = #{record.resType,jdbcType=INTEGER},
+      kind = #{record.kind,jdbcType=INTEGER},
+      sub_code = #{record.subCode,jdbcType=INTEGER},
+      stage_code = #{record.stageCode,jdbcType=INTEGER},
+      class_code = #{record.classCode,jdbcType=INTEGER},
+      book_code = #{record.bookCode,jdbcType=INTEGER},
+      publishing = #{record.publishing,jdbcType=INTEGER},
+      cp_price = #{record.cpPrice,jdbcType=REAL},
+      b2b_price = #{record.b2bPrice,jdbcType=REAL},
+      b2c_price = #{record.b2cPrice,jdbcType=REAL},
+      cover = #{record.cover,jdbcType=VARCHAR},
+      submit_status = #{record.submitStatus,jdbcType=INTEGER},
+      approval_status = #{record.approvalStatus,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=INTEGER},
+      indexer_id = #{record.indexerId,jdbcType=INTEGER},
+      index_time = #{record.indexTime,jdbcType=TIMESTAMP},
+      first_user_id = #{record.firstUserId,jdbcType=INTEGER},
+      second_distribute_true = #{record.secondDistributeTrue,jdbcType=INTEGER},
+      second_user_id = #{record.secondUserId,jdbcType=INTEGER},
+      second_deadline = #{record.secondDeadline,jdbcType=TIMESTAMP},
+      second_distribute_time = #{record.secondDistributeTime,jdbcType=TIMESTAMP},
+      second_distributor = #{record.secondDistributor,jdbcType=INTEGER},
+      final_distribute_true = #{record.finalDistributeTrue,jdbcType=INTEGER},
+      final_user_id = #{record.finalUserId,jdbcType=INTEGER},
+      final_deadline = #{record.finalDeadline,jdbcType=TIMESTAMP},
+      final_distribute_time = #{record.finalDistributeTime,jdbcType=TIMESTAMP},
+      final_distributor = #{record.finalDistributor,jdbcType=INTEGER},
+      des = #{record.des,jdbcType=LONGVARCHAR},
+      catalog = #{record.catalog,jdbcType=LONGVARCHAR},
+      second_task_description = #{record.secondTaskDescription,jdbcType=LONGVARCHAR},
+      final_task_description = #{record.finalTaskDescription,jdbcType=LONGVARCHAR},
+      metadateInfo = #{record.metadateinfo,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_resource
+    set code = #{record.code,jdbcType=INTEGER},
+      org_id = #{record.orgId,jdbcType=INTEGER},
+      resource_size = #{record.resourceSize,jdbcType=BIGINT},
+      format = #{record.format,jdbcType=VARCHAR},
+      preview_url = #{record.previewUrl,jdbcType=VARCHAR},
+      upload_status = #{record.uploadStatus,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      in_by = #{record.inBy,jdbcType=INTEGER},
+      in_date = #{record.inDate,jdbcType=TIMESTAMP},
+      res_type = #{record.resType,jdbcType=INTEGER},
+      kind = #{record.kind,jdbcType=INTEGER},
+      sub_code = #{record.subCode,jdbcType=INTEGER},
+      stage_code = #{record.stageCode,jdbcType=INTEGER},
+      class_code = #{record.classCode,jdbcType=INTEGER},
+      book_code = #{record.bookCode,jdbcType=INTEGER},
+      publishing = #{record.publishing,jdbcType=INTEGER},
+      cp_price = #{record.cpPrice,jdbcType=REAL},
+      b2b_price = #{record.b2bPrice,jdbcType=REAL},
+      b2c_price = #{record.b2cPrice,jdbcType=REAL},
+      cover = #{record.cover,jdbcType=VARCHAR},
+      submit_status = #{record.submitStatus,jdbcType=INTEGER},
+      approval_status = #{record.approvalStatus,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=INTEGER},
+      indexer_id = #{record.indexerId,jdbcType=INTEGER},
+      index_time = #{record.indexTime,jdbcType=TIMESTAMP},
+      first_user_id = #{record.firstUserId,jdbcType=INTEGER},
+      second_distribute_true = #{record.secondDistributeTrue,jdbcType=INTEGER},
+      second_user_id = #{record.secondUserId,jdbcType=INTEGER},
+      second_deadline = #{record.secondDeadline,jdbcType=TIMESTAMP},
+      second_distribute_time = #{record.secondDistributeTime,jdbcType=TIMESTAMP},
+      second_distributor = #{record.secondDistributor,jdbcType=INTEGER},
+      final_distribute_true = #{record.finalDistributeTrue,jdbcType=INTEGER},
+      final_user_id = #{record.finalUserId,jdbcType=INTEGER},
+      final_deadline = #{record.finalDeadline,jdbcType=TIMESTAMP},
+      final_distribute_time = #{record.finalDistributeTime,jdbcType=TIMESTAMP},
+      final_distributor = #{record.finalDistributor,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" >
+    update t_resource
+    <set >
+      <if test="orgId != null" >
+        org_id = #{orgId,jdbcType=INTEGER},
+      </if>
+      <if test="resourceSize != null" >
+        resource_size = #{resourceSize,jdbcType=BIGINT},
+      </if>
+      <if test="format != null" >
+        format = #{format,jdbcType=VARCHAR},
+      </if>
+      <if test="previewUrl != null" >
+        preview_url = #{previewUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadStatus != null" >
+        upload_status = #{uploadStatus,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="inBy != null" >
+        in_by = #{inBy,jdbcType=INTEGER},
+      </if>
+      <if test="inDate != null" >
+        in_date = #{inDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resType != null" >
+        res_type = #{resType,jdbcType=INTEGER},
+      </if>
+      <if test="kind != null" >
+        kind = #{kind,jdbcType=INTEGER},
+      </if>
+      <if test="subCode != null" >
+        sub_code = #{subCode,jdbcType=INTEGER},
+      </if>
+      <if test="stageCode != null" >
+        stage_code = #{stageCode,jdbcType=INTEGER},
+      </if>
+      <if test="classCode != null" >
+        class_code = #{classCode,jdbcType=INTEGER},
+      </if>
+      <if test="bookCode != null" >
+        book_code = #{bookCode,jdbcType=INTEGER},
+      </if>
+      <if test="publishing != null" >
+        publishing = #{publishing,jdbcType=INTEGER},
+      </if>
+      <if test="cpPrice != null" >
+        cp_price = #{cpPrice,jdbcType=REAL},
+      </if>
+      <if test="b2bPrice != null" >
+        b2b_price = #{b2bPrice,jdbcType=REAL},
+      </if>
+      <if test="b2cPrice != null" >
+        b2c_price = #{b2cPrice,jdbcType=REAL},
+      </if>
+      <if test="cover != null" >
+        cover = #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="submitStatus != null" >
+        submit_status = #{submitStatus,jdbcType=INTEGER},
+      </if>
+      <if test="approvalStatus != null" >
+        approval_status = #{approvalStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="indexerId != null" >
+        indexer_id = #{indexerId,jdbcType=INTEGER},
+      </if>
+      <if test="indexTime != null" >
+        index_time = #{indexTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="firstUserId != null" >
+        first_user_id = #{firstUserId,jdbcType=INTEGER},
+      </if>
+      <if test="secondDistributeTrue != null" >
+        second_distribute_true = #{secondDistributeTrue,jdbcType=INTEGER},
+      </if>
+      <if test="secondUserId != null" >
+        second_user_id = #{secondUserId,jdbcType=INTEGER},
+      </if>
+      <if test="secondDeadline != null" >
+        second_deadline = #{secondDeadline,jdbcType=TIMESTAMP},
+      </if>
+      <if test="secondDistributeTime != null" >
+        second_distribute_time = #{secondDistributeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="secondDistributor != null" >
+        second_distributor = #{secondDistributor,jdbcType=INTEGER},
+      </if>
+      <if test="finalDistributeTrue != null" >
+        final_distribute_true = #{finalDistributeTrue,jdbcType=INTEGER},
+      </if>
+      <if test="finalUserId != null" >
+        final_user_id = #{finalUserId,jdbcType=INTEGER},
+      </if>
+      <if test="finalDeadline != null" >
+        final_deadline = #{finalDeadline,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finalDistributeTime != null" >
+        final_distribute_time = #{finalDistributeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finalDistributor != null" >
+        final_distributor = #{finalDistributor,jdbcType=INTEGER},
+      </if>
+      <if test="des != null" >
+        des = #{des,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="catalog != null" >
+        catalog = #{catalog,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="secondTaskDescription != null" >
+        second_task_description = #{secondTaskDescription,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="finalTaskDescription != null" >
+        final_task_description = #{finalTaskDescription,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="metadateinfo != null" >
+        metadateInfo = #{metadateinfo,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where code = #{code,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" >
+    update t_resource
+    set org_id = #{orgId,jdbcType=INTEGER},
+      resource_size = #{resourceSize,jdbcType=BIGINT},
+      format = #{format,jdbcType=VARCHAR},
+      preview_url = #{previewUrl,jdbcType=VARCHAR},
+      upload_status = #{uploadStatus,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      in_by = #{inBy,jdbcType=INTEGER},
+      in_date = #{inDate,jdbcType=TIMESTAMP},
+      res_type = #{resType,jdbcType=INTEGER},
+      kind = #{kind,jdbcType=INTEGER},
+      sub_code = #{subCode,jdbcType=INTEGER},
+      stage_code = #{stageCode,jdbcType=INTEGER},
+      class_code = #{classCode,jdbcType=INTEGER},
+      book_code = #{bookCode,jdbcType=INTEGER},
+      publishing = #{publishing,jdbcType=INTEGER},
+      cp_price = #{cpPrice,jdbcType=REAL},
+      b2b_price = #{b2bPrice,jdbcType=REAL},
+      b2c_price = #{b2cPrice,jdbcType=REAL},
+      cover = #{cover,jdbcType=VARCHAR},
+      submit_status = #{submitStatus,jdbcType=INTEGER},
+      approval_status = #{approvalStatus,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      indexer_id = #{indexerId,jdbcType=INTEGER},
+      index_time = #{indexTime,jdbcType=TIMESTAMP},
+      first_user_id = #{firstUserId,jdbcType=INTEGER},
+      second_distribute_true = #{secondDistributeTrue,jdbcType=INTEGER},
+      second_user_id = #{secondUserId,jdbcType=INTEGER},
+      second_deadline = #{secondDeadline,jdbcType=TIMESTAMP},
+      second_distribute_time = #{secondDistributeTime,jdbcType=TIMESTAMP},
+      second_distributor = #{secondDistributor,jdbcType=INTEGER},
+      final_distribute_true = #{finalDistributeTrue,jdbcType=INTEGER},
+      final_user_id = #{finalUserId,jdbcType=INTEGER},
+      final_deadline = #{finalDeadline,jdbcType=TIMESTAMP},
+      final_distribute_time = #{finalDistributeTime,jdbcType=TIMESTAMP},
+      final_distributor = #{finalDistributor,jdbcType=INTEGER},
+      des = #{des,jdbcType=LONGVARCHAR},
+      catalog = #{catalog,jdbcType=LONGVARCHAR},
+      second_task_description = #{secondTaskDescription,jdbcType=LONGVARCHAR},
+      final_task_description = #{finalTaskDescription,jdbcType=LONGVARCHAR},
+      metadateInfo = #{metadateinfo,jdbcType=LONGVARCHAR}
+    where code = #{code,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" >
+    update t_resource
+    set org_id = #{orgId,jdbcType=INTEGER},
+      resource_size = #{resourceSize,jdbcType=BIGINT},
+      format = #{format,jdbcType=VARCHAR},
+      preview_url = #{previewUrl,jdbcType=VARCHAR},
+      upload_status = #{uploadStatus,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      in_by = #{inBy,jdbcType=INTEGER},
+      in_date = #{inDate,jdbcType=TIMESTAMP},
+      res_type = #{resType,jdbcType=INTEGER},
+      kind = #{kind,jdbcType=INTEGER},
+      sub_code = #{subCode,jdbcType=INTEGER},
+      stage_code = #{stageCode,jdbcType=INTEGER},
+      class_code = #{classCode,jdbcType=INTEGER},
+      book_code = #{bookCode,jdbcType=INTEGER},
+      publishing = #{publishing,jdbcType=INTEGER},
+      cp_price = #{cpPrice,jdbcType=REAL},
+      b2b_price = #{b2bPrice,jdbcType=REAL},
+      b2c_price = #{b2cPrice,jdbcType=REAL},
+      cover = #{cover,jdbcType=VARCHAR},
+      submit_status = #{submitStatus,jdbcType=INTEGER},
+      approval_status = #{approvalStatus,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      indexer_id = #{indexerId,jdbcType=INTEGER},
+      index_time = #{indexTime,jdbcType=TIMESTAMP},
+      first_user_id = #{firstUserId,jdbcType=INTEGER},
+      second_distribute_true = #{secondDistributeTrue,jdbcType=INTEGER},
+      second_user_id = #{secondUserId,jdbcType=INTEGER},
+      second_deadline = #{secondDeadline,jdbcType=TIMESTAMP},
+      second_distribute_time = #{secondDistributeTime,jdbcType=TIMESTAMP},
+      second_distributor = #{secondDistributor,jdbcType=INTEGER},
+      final_distribute_true = #{finalDistributeTrue,jdbcType=INTEGER},
+      final_user_id = #{finalUserId,jdbcType=INTEGER},
+      final_deadline = #{finalDeadline,jdbcType=TIMESTAMP},
+      final_distribute_time = #{finalDistributeTime,jdbcType=TIMESTAMP},
+      final_distributor = #{finalDistributor,jdbcType=INTEGER}
+    where code = #{code,jdbcType=INTEGER}
+  </update>
+  
+  <!-- ### 以上代码由MBG + CommentPlugin自动生成, 生成时间: 2019-04-16 16:11:48 ### -->
+
+
+
+  <!-- Your codes goes here!!! -->
+  
+</mapper>

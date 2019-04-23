@@ -1,0 +1,44 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /tpcms
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1 #如果不限制大小，则设置为-1即可
+  #数据源
+  datasource:
+    url: jdbc:mysql://123.59.199.170:3306/TimesPublishing?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2b8&useSSL=false
+    username: root
+    password: iLoveRetech0705
+    hikari:
+      minimum-idle: 3
+      auto-commit: true
+      idle-timeout: 600000
+      pool-name: DatebookHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      maximum-pool-size: 15
+
+# 分布式文件系统FDFS配置
+fdfs:
+  tracker-list:            #TrackerList参数,支持多个
+  - 123.59.199.170:22122
+  # 存储服务器storage_server访问地址
+  web-server-url: http://123.59.199.170/
+
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml,classpath:mapper/custom/*Mapper.xml
+  type-aliases-package: com.retech.tpcms.entity
+
+interface:
+  sign:
+    key: 9513574268 #签名秘钥
+  url:
+    login: http://localhost:8080/tpcms/user/checkLogin #用户登录接口
+    log: http://localhost:8080/tpcms/log/add #日志接口
+    resource: http://localhost:8080/tpcms/resource/indexBatch #教材标引接口
+    apapproval: http://localhost:8080/tpcms/apapproval/approvalBatch #审核接口
+    error: http://localhost:8080/tpcms/error/checkAdd #纠错接口
